@@ -42,4 +42,6 @@
     free(ptr);                                                                 \
     ptr = NULL;                                                                \
   } while (0);
+
+#define BITS_IN_BYTE 8
 #endif

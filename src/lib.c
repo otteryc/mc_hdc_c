@@ -10,7 +10,8 @@
 static hv_t *new_hypervector(uint32_t dimension) {
   hv_t *new;
   MALLOC(new, sizeof(hv_t));
-  MALLOC(new->hv, dimension / sizeof(uint8_t));
+  /* +4 byte padding for accelerating permute operation */
+  MALLOC(new->hv, dimension / (sizeof(uint8_t) * BITS_IN_BYTE) + 4);
   new->dimension = dimension;
   return new;
 }
@@ -18,7 +19,9 @@ static hv_t *new_hypervector(uint32_t dimension) {
 hv_t *new_empty_hypervector(uint32_t dimension) {
   hv_t *new;
   MALLOC(new, sizeof(hv_t));
-  CALLOC(new->hv, sizeof(uint8_t), dimension / sizeof(uint8_t));
+  /* +4 byte padding for accelerating permute operation */
+  CALLOC(new->hv, sizeof(uint8_t),
+         dimension / (sizeof(uint8_t) * BITS_IN_BYTE) + 4);
   new->dimension = dimension;
   return new;
 }
@@ -40,9 +43,16 @@ hv_t *new_identity_hypervector(uint32_t dimension) {
 hv_t *new_negate_hypervector(hv_t *hv) {
   hv_t *new = new_hypervector(hv->dimension);
   uint32_t i = 0;
-  ITER_HV(hv, i) { new->hv[i] = ~hv->hv[i]; }
+  ITER_HV_32(hv, i) { new->hv_32[i] = ~hv->hv_32[i]; }
   new->dimension = hv->dimension;
   return new;
+}
+
+hv_t *clone_hypervector(hv_t *hv) {
+  hv_t *clone = new_hypervector(hv->dimension);
+  memcpy(clone->hv, hv->hv, hv->dimension / sizeof(uint8_t));
+  clone->dimension = hv->dimension;
+  return clone;
 }
 
 void free_hypervector(hv_t *hv) {
@@ -50,8 +60,15 @@ void free_hypervector(hv_t *hv) {
   FREE(hv);
 }
 
+static void pbin(uint8_t byte) {
+  for (int i = 7; i >= 0; i--) {
+    printf("%c", (byte & (1 << i)) ? '1' : '0');
+  }
+  putchar(' ');
+}
+
 void print_hypervector(hv_t *hv) {
   uint32_t i = 0;
-  ITER_HV(hv, i) { printf("%x", hv->hv[i]); }
+  ITER_HV(hv, i) { pbin(hv->hv[i]); }
   printf("\n");
 }

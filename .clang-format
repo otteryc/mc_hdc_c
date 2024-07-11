@@ -1,0 +1,4 @@
+AllowShortFunctionsOnASingleLine: false
+BasedOnStyle: LLVM
+BreakBeforeBraces: Linux
+IndentWidth: 4

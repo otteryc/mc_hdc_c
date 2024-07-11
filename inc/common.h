@@ -10,38 +10,38 @@
 
 #define __COMMON_H
 #define REALLOC(ptr, length)                                                   \
-  do {                                                                         \
-    ptr = realloc(ptr, length);                                                \
-    if (unlikely(!ptr)) {                                                      \
-      perror("\nCRITICAL: Unable to reallocate memory, exiting...");           \
-      exit(1);                                                                 \
-    }                                                                          \
-  } while (0);
+    do {                                                                       \
+        ptr = realloc(ptr, length);                                            \
+        if (unlikely(!ptr)) {                                                  \
+            perror("\nCRITICAL: Unable to reallocate memory, exiting...");     \
+            exit(1);                                                           \
+        }                                                                      \
+    } while (0);
 
 #define MALLOC(ptr, length)                                                    \
-  do {                                                                         \
-    ptr = malloc(length);                                                      \
-    if (unlikely(!ptr)) {                                                      \
-      perror("\nCRITICAL: Unable to allocate memory, exiting...");             \
-      exit(1);                                                                 \
-    }                                                                          \
-  } while (0);
+    do {                                                                       \
+        ptr = malloc(length);                                                  \
+        if (unlikely(!ptr)) {                                                  \
+            perror("\nCRITICAL: Unable to allocate memory, exiting...");       \
+            exit(1);                                                           \
+        }                                                                      \
+    } while (0);
 
 #define CALLOC(ptr, length, size)                                              \
-  do {                                                                         \
-    ptr = calloc(length, size);                                                \
-    if (unlikely(!ptr)) {                                                      \
-      perror("\nCRITICAL: Unable to allocate memory, exiting...");             \
-      exit(1);                                                                 \
-    }                                                                          \
-  } while (0);
+    do {                                                                       \
+        ptr = calloc(length, size);                                            \
+        if (unlikely(!ptr)) {                                                  \
+            perror("\nCRITICAL: Unable to allocate memory, exiting...");       \
+            exit(1);                                                           \
+        }                                                                      \
+    } while (0);
 
 #define FREE(ptr)                                                              \
-  do {                                                                         \
-    /* it is legal to free(NULL) */                                            \
-    free(ptr);                                                                 \
-    ptr = NULL;                                                                \
-  } while (0);
+    do {                                                                       \
+        /* it is legal to free(NULL) */                                        \
+        free(ptr);                                                             \
+        ptr = NULL;                                                            \
+    } while (0);
 
 #define BITS_IN_BYTE 8
 #endif

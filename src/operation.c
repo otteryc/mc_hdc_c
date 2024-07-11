@@ -4,11 +4,6 @@
 #include <stdint.h>
 #include <string.h>
 
-static uint8_t power_of_2[] = {
-    [1] = 0b1,     [2] = 0b11,     [3] = 0b111,     [4] = 0b1111,
-    [5] = 0b11111, [6] = 0b111111, [7] = 0b1111111,
-};
-
 /* For readability, compiler will optimize it */
 static hv_t *fast_permute_32(hv_t *hv) {
   memmove(hv->hv + 4, hv->hv, hv->dimension / BITS_IN_BYTE);
@@ -44,7 +39,7 @@ static hv_t *fast_permute(hv_t *hv, uint8_t shift) {
   uint32_t i;
   uint8_t prev_lower = 0, current_lower;
   ITER_HV(hv, i) {
-    current_lower = hv->hv[i] & power_of_2[shift];
+    current_lower = hv->hv[i] & ((i << shift) - 1);
     current_lower = current_lower << (8 - shift);
     hv->hv[i] = hv->hv[i] >> shift;
     hv->hv[i] |= prev_lower;

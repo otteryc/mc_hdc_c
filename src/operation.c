@@ -40,10 +40,9 @@ static hv_t *fast_permute(hv_t *hv, uint8_t shift) {
   uint8_t prev_lower = 0, current_lower;
   ITER_HV(hv, i) {
     current_lower = hv->hv[i] & ((i << shift) - 1);
-    current_lower = current_lower << (8 - shift);
     hv->hv[i] = hv->hv[i] >> shift;
     hv->hv[i] |= prev_lower;
-    prev_lower = current_lower;
+    prev_lower = current_lower << (8 - shift);
   }
   hv->hv[0] |= prev_lower;
   return hv;

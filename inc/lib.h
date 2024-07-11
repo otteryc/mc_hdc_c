@@ -9,7 +9,7 @@ hv_t *new_identity_hypervector(uint32_t dimension);
 hv_t *new_negate_hypervector(hv_t *hv);
 hv_t *clone_hypervector(hv_t *hv);
 
-hv_t *permute_hypervector(hv_t *hv, uint32_t shift);
+hv_t *new_permute_hypervector(hv_t *hv, uint32_t shift);
 
 void free_hypervector(hv_t *hv);
 

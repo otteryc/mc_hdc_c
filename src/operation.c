@@ -54,7 +54,7 @@ static hv_t *fast_permute(hv_t *hv, uint8_t shift) {
   return hv;
 }
 
-hv_t *permute_hypervector(hv_t *hv, uint32_t shift) {
+hv_t *new_permute_hypervector(hv_t *hv, uint32_t shift) {
   hv_t *clone = clone_hypervector(hv);
   while (shift >= 8) {
     if (shift >= 32) {

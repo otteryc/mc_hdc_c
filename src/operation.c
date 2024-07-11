@@ -71,3 +71,50 @@ hv_t *new_permute_hypervector(hv_t *hv, uint32_t shift) {
 
   return fast_permute(clone, shift);
 }
+
+void negate_hypervector(hv_t *hv) {
+  uint32_t i;
+  ITER_HV_32(hv, i) { hv->hv_32[i] = ~hv->hv_32[i]; }
+}
+
+#define hvops(name, op)                                                        \
+  void name##_hypervector(hv_t *dest, hv_t *src1, hv_t *src2) {                \
+    uint32_t i;                                                                \
+    ITER_HV_32(src1, i) { dest->hv_32[i] = src1->hv_32[i] op src2->hv_32[i]; } \
+  }
+
+hvops(xor, ^);
+hvops(or, |);
+hvops(and, &);
+#undef hvops
+
+#define hvops(name, op)                                                        \
+  hv_t *new_##name##_hypervector(hv_t *src1, hv_t *src2) {                     \
+    uint32_t i;                                                                \
+    hv_t *dest = clone_hypervector(src1);                                      \
+    ITER_HV_32(src2, i) { dest->hv_32[i] op## = src2->hv_32[i]; }              \
+    return dest;                                                               \
+  }
+
+hvops(xor, ^);
+hvops(or, |);
+hvops(and, &);
+#undef hvops
+
+/* BIND: dissimilar to both */
+hv_t *new_bind_hypervector(hv_t *src1, hv_t *src2) {
+  return new_xor_hypervector(src1, src2);
+}
+
+/* BUNDLE: maximally similar to both */
+hv_t *new_bundle_hypervector(hv_t *src1, hv_t *src2) {
+  hv_t * or = new_or_hypervector(src1, src2);
+  hv_t * xor = new_xor_hypervector(src1, src2);
+  hv_t *tiebreaker = new_random_hypervector(src1->dimension);
+  and_hypervector(tiebreaker, tiebreaker, xor);
+  negate_hypervector(tiebreaker);
+  and_hypervector(or, tiebreaker, or);
+  free_hypervector(tiebreaker);
+  free_hypervector(xor);
+  return or ;
+}

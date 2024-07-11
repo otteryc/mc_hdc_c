@@ -10,6 +10,18 @@ hv_t *new_negate_hypervector(hv_t *hv);
 hv_t *clone_hypervector(hv_t *hv);
 
 hv_t *new_permute_hypervector(hv_t *hv, uint32_t shift);
+#define hvops(name) hv_t *new_##name##_hypervector(hv_t *, hv_t *)
+hvops(and);
+hvops(or);
+hvops(xor);
+hvops(bind);
+hvops(bundle);
+#undef hvops
+#define hvops(name) void name##_hypervector(hv_t *, hv_t *, hv_t *)
+hvops(and);
+hvops(or);
+hvops(xor);
+#undef hvops
 
 void free_hypervector(hv_t *hv);
 

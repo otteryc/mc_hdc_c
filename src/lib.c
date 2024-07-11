@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 /* This function returns an uninitiallized Hypervector, which should not be used
  * anywhere except in this file. */
@@ -28,9 +27,7 @@ hv_t *new_empty_hypervector(uint32_t dimension) {
 
 hv_t *new_random_hypervector(uint32_t dimensional) {
   hv_t *new = new_hypervector(dimensional);
-  uint32_t i = 0;
-  srand(time(NULL));
-  ITER_HV(new, i) { new->hv[i] = rand(); }
+  arc4random_buf(new->hv, new->dimension / BITS_IN_BYTE);
   return new;
 }
 
@@ -44,14 +41,12 @@ hv_t *new_negate_hypervector(hv_t *hv) {
   hv_t *new = new_hypervector(hv->dimension);
   uint32_t i = 0;
   ITER_HV_32(hv, i) { new->hv_32[i] = ~hv->hv_32[i]; }
-  new->dimension = hv->dimension;
   return new;
 }
 
 hv_t *clone_hypervector(hv_t *hv) {
   hv_t *clone = new_hypervector(hv->dimension);
-  memcpy(clone->hv, hv->hv, hv->dimension / sizeof(uint8_t));
-  clone->dimension = hv->dimension;
+  memcpy(clone->hv, hv->hv, hv->dimension / BITS_IN_BYTE);
   return clone;
 }
 

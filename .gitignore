@@ -1,0 +1,4 @@
+*.o
+.cache
+mc_hdc
+compile_commands.json

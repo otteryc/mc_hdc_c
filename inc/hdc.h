@@ -2,6 +2,7 @@
 #define __HDC_C
 
 #include "common.h"
+#include "list.h"
 #include <stdint.h>
 
 struct Hypervector {
@@ -11,6 +12,7 @@ struct Hypervector {
         uint32_t *hv_32;
     };
     uint32_t dimension;
+    struct list_head list;
 };
 
 typedef struct Hypervector hv_t;

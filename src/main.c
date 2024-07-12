@@ -8,6 +8,10 @@
     printf(#name ": \t");                                                      \
     print_hypervector(name);
 
+#define cosine(src1, src2)                                                     \
+    printf("Cosine Similarity between " #src1 " and " #src2 " is %lf.\n",      \
+           cosine_similarity(src1, src2));
+
 int main()
 {
     hv_t *random = new_random_hypervector(96);
@@ -23,14 +27,7 @@ int main()
     phv(bundle);
     phv(permute);
 
-    printf("Cosine Similarity between random and bind: %lf\n",
-           cosine_similarity(random, bind));
-    printf("Cosine Similarity between random and bundle: %lf\n",
-           cosine_similarity(random, bundle));
-    printf("Cosine Similarity between random and its permute: %lf\n",
-           cosine_similarity(random, permute));
-    printf("Cosine Similarity between random and its inverse: %lf\n",
-           cosine_similarity(random, inverse));
+    cosine(random, bind);
 
     free_hypervector(random);
     free_hypervector(permute);

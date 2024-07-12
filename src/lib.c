@@ -1,5 +1,6 @@
 #include "common.h"
 #include "hdc.h"
+#include "list.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,6 +14,7 @@ static hv_t *new_hypervector(uint32_t dimension)
     /* +4 byte padding for accelerating permute operation */
     MALLOC(new->hv, dimension / (sizeof(uint8_t) * BITS_IN_BYTE) + 4);
     new->dimension = dimension;
+    INIT_LIST_HEAD(&new->list);
     return new;
 }
 
@@ -24,6 +26,7 @@ hv_t *new_empty_hypervector(uint32_t dimension)
     CALLOC(new->hv, sizeof(uint8_t),
            dimension / (sizeof(uint8_t) * BITS_IN_BYTE) + 4);
     new->dimension = dimension;
+    INIT_LIST_HEAD(&new->list);
     return new;
 }
 

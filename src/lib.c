@@ -48,8 +48,7 @@ hv_t *new_negate_hypervector(hv_t *hv)
 {
     hv_t *new = new_hypervector(hv->dimension);
     uint32_t i = 0;
-    ITER_HV_32(hv, i)
-    {
+    ITER_HV_32 (hv, i) {
         new->hv_32[i] = ~hv->hv_32[i];
     }
     return new;
@@ -79,8 +78,7 @@ static void pbin(uint8_t byte)
 void print_hypervector(hv_t *hv)
 {
     uint32_t i = 0;
-    ITER_HV(hv, i)
-    {
+    ITER_HV (hv, i) {
         pbin(hv->hv[i]);
     }
     printf("\n");

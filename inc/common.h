@@ -1,5 +1,6 @@
 #ifndef __COMMON_H
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -44,4 +45,15 @@
     } while (0);
 
 #define BITS_IN_BYTE 8
+
+static inline bool get_bit_from_byte(uint8_t n, uint8_t index)
+{
+    return ((n & (1 << (7 - index))) > 0);
+}
+
+static inline void set_bit_in_byte(uint8_t *n, uint8_t index, bool value)
+{
+    *n |= value << (7 - index);
+}
+
 #endif

@@ -2,3 +2,9 @@ AllowShortFunctionsOnASingleLine: false
 BasedOnStyle: LLVM
 BreakBeforeBraces: Linux
 IndentWidth: 4
+ForEachMacros:
+  - ITER_HV
+  - ITER_HV_16
+  - ITER_HV_32
+  - list_for_each
+  - list_for_each_entry

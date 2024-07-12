@@ -16,6 +16,12 @@ struct list_head {
  */
 #define LIST_HEAD(head) struct list_head head = {&(head), &(head)}
 
+#define container_of(ptr, type, member)                                        \
+    __extension__({                                                            \
+        const __typeof__(((type *)0)->member) *__pmember = (ptr);              \
+        (type *)((char *)__pmember - offsetof(type, member));                  \
+    })
+
 /* INIT_LIST_HEAD() - Initialize empty list head
  * @head: pointer to list head
  */
@@ -134,4 +140,9 @@ static inline void list_cut_position(struct list_head *head_to,
  */
 #define list_for_each(node, head)                                              \
     for (node = (head)->next; node != (head); node = node->next)
+
+#define list_for_each_entry(entry, head, member)                               \
+    for (entry = list_entry((head)->next, __typeof__(*entry), member);         \
+         &entry->member != (head);                                             \
+         entry = list_entry(entry->member.next, __typeof__(*entry), member))
 #endif

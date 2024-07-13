@@ -162,3 +162,17 @@ hv_t *new_bundle_multi_hypervector(struct list_head *head)
     FREE(ballot_box);
     return result;
 }
+
+hv_t *new_bind_multi_hypervector(struct list_head *head)
+{
+    if (list_empty(head)) {
+        perror("List is empty.\n");
+        return NULL;
+    }
+    uint32_t dimension = list_first_entry(head, hv_t, list)->dimension;
+    hv_t *result = new_empty_hypervector(dimension), *iter;
+    list_for_each_entry (iter, head, list) {
+        xor_hypervector(result, result, iter);
+    }
+    return result;
+}

@@ -23,6 +23,7 @@ hvops(or);
 hvops(xor);
 #undef hvops
 hv_t *new_bundle_multi_hypervector(struct list_head *);
+hv_t *new_bind_multi_hypervector(struct list_head *head);
 
 void free_hypervector(hv_t *hv);
 

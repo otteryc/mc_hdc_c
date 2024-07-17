@@ -152,12 +152,28 @@ hv_t *new_bundle_multi_hypervector(struct list_head *head)
     }
     /* Majority Voting */
     threshold = (hv_count + 1) / 2;
-    ITER_HV (result, i) {
-        for (int j = 0; j < BITS_IN_BYTE; j++)
-            set_bit_in_byte(result->hv + i, j,
-                            ballot_box[i * BITS_IN_BYTE + j] > threshold ||
-                                ballot_box[i * BITS_IN_BYTE + j] == threshold &&
-                                    j % 2);
+    if (hv_count % 2) {
+        hv_t *tiebreaker = new_random_hypervector(dimension),
+             *tie = new_empty_hypervector(dimension);
+        ITER_HV (result, i) {
+            for (int j = 0; j < BITS_IN_BYTE; j++) {
+                set_bit_in_byte(result->hv + i, j,
+                                ballot_box[i * BITS_IN_BYTE + j] >= threshold);
+                set_bit_in_byte(tie->hv + i, j,
+                                ballot_box[i * BITS_IN_BYTE + j] == threshold);
+            }
+        }
+        and_hypervector(tiebreaker, tiebreaker, tie);
+        negate_hypervector(tiebreaker);
+        and_hypervector(result, result, tiebreaker);
+        free_hypervector(tie);
+        free_hypervector(tiebreaker);
+    } else {
+        ITER_HV (result, i) {
+            for (int j = 0; j < BITS_IN_BYTE; j++)
+                set_bit_in_byte(result->hv + i, j,
+                                ballot_box[i * BITS_IN_BYTE + j] > threshold);
+        }
     }
     FREE(ballot_box);
     return result;

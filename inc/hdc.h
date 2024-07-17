@@ -17,6 +17,38 @@ struct Hypervector {
 
 typedef struct Hypervector hv_t;
 
+struct AssociativeMemory {
+    hv_t *hv;
+    char *class_name;
+    /* As in some HDC model e.g. [1], there may have multi-HV for a class,
+     * therefore, we declare a new `list_head` here for extensibility.
+     * [1] M.Imani et al. Hierarchical Hyperdimensional Computing for Energy
+     * Efficient Classification, DAC 2018 */
+    struct list_head list;
+};
+
+typedef struct AssociativeMemory am_t;
+
+struct QueryResult {
+    union {
+        double cosine;
+        uint32_t hamming;
+    };
+    /* class_name will be a pointer to AssociativeMemory's class name, as
+     * AssociativeMemory shall be a static variable in inference time.
+     * Therefore, this pointer shall never be freed. */
+    char *class_name;
+    struct list_head list;
+};
+
+typedef struct QueryResult qry_t;
+
+enum similarity_method {
+    COSINE,
+    HAMMING,
+};
+
+/* ForEach Macros */
 #define ITER_HV(hypervector, iterator)                                         \
     for (iterator = 0;                                                         \
          iterator < hypervector->dimension / (BITS_IN_BYTE * sizeof(uint8_t)); \

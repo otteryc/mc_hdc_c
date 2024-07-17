@@ -25,23 +25,26 @@ int main()
     hv_t *bundle = new_bundle_hypervector(random, random1);
 
     LIST_HEAD(head);
-    list_add_tail(&random->list, &head);
-    list_add_tail(&random1->list, &head);
-    list_add_tail(&permute->list, &head);
-    list_add_tail(&bundle->list, &head);
+    chain_hypervector(&head, random, random1, permute, inverse, bundle, bind,
+                      NULL);
 
     hv_t *bundle_together = new_bundle_multi_hypervector(&head);
     hv_t *bind_together = new_bind_multi_hypervector(&head);
-    phv(random);
-    phv(random1);
-    phv(bundle);
-    phv(permute);
-    phv(bundle_together);
-    phv(bind_together);
+    LIST_HEAD(am);
+    add_memory_item(&am, bundle_together, "bundle_together");
+    add_memory_item(&am, bind_together, "bind_together");
+    // phv(random);
+    // phv(random1);
+    // phv(bundle);
+    // phv(permute);
+    // phv(bundle_together);
+    // phv(bind_together);
 
-    cosine(random, bind_together);
-    cosine(random, bundle_together);
-
+    struct list_head *res = query_memory(&am, random, COSINE);
+    qry_t *iter;
+    list_for_each_entry (iter, res, list) {
+        printf("%s: %lf\n", iter->class_name, iter->cosine);
+    }
     free_hypervector(random);
     free_hypervector(permute);
     free_hypervector(inverse);

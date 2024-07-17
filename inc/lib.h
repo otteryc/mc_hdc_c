@@ -31,6 +31,10 @@ uint32_t hamming_distance(hv_t *hv1, hv_t *hv2);
 uint32_t dot_distance(hv_t *hv1, hv_t *hv2);
 double cosine_similarity(hv_t *hv1, hv_t *hv2);
 
+void chain_hypervector(struct list_head *head, hv_t *hv1, ...);
 void print_hypervector(hv_t *);
+struct list_head *query_memory(struct list_head *, hv_t *,
+                               enum similarity_method);
 
+void add_memory_item(struct list_head *am, hv_t *hv, char *class_name);
 #endif

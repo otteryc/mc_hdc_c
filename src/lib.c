@@ -1,6 +1,7 @@
 #include "common.h"
 #include "hdc.h"
 #include "list.h"
+#include <stdarg.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -82,4 +83,17 @@ void print_hypervector(hv_t *hv)
         pbin(hv->hv[i]);
     }
     printf("\n");
+}
+
+/* End with a pointer to NULL */
+void chain_hypervector(struct list_head *head, hv_t *hv1, ...)
+{
+    va_list va;
+    hv_t *hv;
+
+    va_start(va, hv1);
+    for (hv = hv1; hv != NULL; hv = va_arg(va, hv_t *)) {
+        list_add_tail(&hv1->list, head);
+    }
+    va_end(va);
 }

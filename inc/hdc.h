@@ -1,5 +1,5 @@
-#ifndef __HDC_C
-#define __HDC_C
+#ifndef __HDC_H
+#define __HDC_H
 
 #include "common.h"
 #include "list.h"

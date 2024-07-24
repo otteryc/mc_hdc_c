@@ -1,5 +1,5 @@
-#ifndef _HDC__LIB_H
-#define _HDC__LIB_H
+#ifndef __HDC_LIB_H
+#define __HDC_LIB_H
 
 #include "hdc.h"
 

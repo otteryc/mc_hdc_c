@@ -1,7 +1,7 @@
 .PHONY: all clean run mc_hdc
 
 CC := gcc
-CFLAGS := -O3 -Wall -g
+CFLAGS := -O3 -Wall -g -lm 
 LDFLAGS := -lm
 
 INC += inc/
@@ -14,7 +14,7 @@ run: mc_hdc
 	./mc_hdc
 
 mc_hdc: $(OBJ)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS) 
 
 %.o: %.c
 	$(CC) -c -o $@ -I $(INC) $(CFLAGS) $<

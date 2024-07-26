@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <unistd.h>
 
@@ -5,7 +6,9 @@
 #include "lib.h"
 #include "list.h"
 
-#define DIMENSION 10000
+#define DIMENSION 2048
+#define NUM_LEVELS 16
+#define NUM_CLASSES 10
 
 #define phv(name)                                                              \
     printf(#name ": \t");                                                      \
@@ -15,37 +18,34 @@
     printf("Cosine Similarity between " #src1 " and " #src2 " is %lf.\n",      \
            cosine_similarity(src1, src2));
 
+static inline hv_t *hv_from_chunk(uint8_t *chunk)
+{
+    hv_t *new;
+    MALLOC(new, sizeof(hv_t));
+    new->hv = chunk;
+    new->dimension = DIMENSION;
+    return new;
+}
+
+extern unsigned char level_hypervectors[][256];
+extern unsigned char sample_hypervectors[][256];
+extern unsigned char position_hypervectors[][256];
+
+LIST_HEAD(am);
+LIST_HEAD(level_hv);
+LIST_HEAD(position);
+
+void init()
+{
+    for (size_t i = 0; i < NUM_CLASSES; i++)
+        chain_hypervector(&am, hv_from_chunk(sample_hypervectors[i]));
+    for (size_t i = 0; i < NUM_LEVELS; i++)
+        chain_hypervector(&level_hv, hv_from_chunk(level_hypervectors[i]));
+    chain_hypervector(&position, hv_from_chunk(position_hypervectors[0]));
+}
 int main()
 {
-    hv_t *random = new_random_hypervector(DIMENSION);
-    hv_t *random1 = new_random_hypervector(DIMENSION);
-    hv_t *permute = new_permute_hypervector(random, 1);
-    hv_t *inverse = new_negate_hypervector(random);
-    hv_t *bind = new_bind_hypervector(random, random1);
-    hv_t *bundle = new_bundle_hypervector(random, random1);
-
-    LIST_HEAD(head);
-    chain_hypervector(&head, random, random1, permute, inverse, bundle, bind,
-                      NULL);
-
-    hv_t *bundle_together = new_bundle_multi_hypervector(&head);
-    hv_t *bind_together = new_bind_multi_hypervector(&head);
-    LIST_HEAD(am);
-    add_memory_item(&am, bundle_together, "bundle_together");
-    add_memory_item(&am, bind_together, "bind_together");
-    // phv(random);
-    // phv(random1);
-    // phv(bundle);
-    // phv(permute);
-    // phv(bundle_together);
-    // phv(bind_together);
-
-    struct list_head *res = query_memory(&am, random, COSINE);
-    qry_t *iter;
-    list_for_each_entry (iter, res, list) {
-        printf("%s: %lf\n", iter->class_name, iter->cosine);
-    }
-    free_hypervector(random);
-    free_hypervector(permute);
-    free_hypervector(inverse);
+    init();
+    cosine(list_first_entry(&level_hv, hv_t, list),
+           list_first_entry(&am, hv_t, list));
 }

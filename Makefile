@@ -14,11 +14,11 @@ run: mc_hdc
 	./mc_hdc
 
 mc_hdc: $(OBJ)
-	$(CC) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS) 
 
 %.o: %.c
 	$(CC) -c -o $@ -I $(INC) $(CFLAGS) $<
 
 clean:
-	rm **/*.o
-	rm mc_hdc
+	-rm **/*.o
+	-rm mc_hdc
